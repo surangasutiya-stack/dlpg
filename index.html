@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🎮 𝐃𝐋𝐏 𝐆𝐀𝐌𝐈𝐍𝐆 𝐒𝐓𝐎𝐑 🎮</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+
+    body {
+      color: #ffffff;
+      min-height: 100vh;
+      background: linear-gradient(-45deg, #1a0033, #330033, #330066, #1a0033);
+      background-size: 300% 300%;
+      animation: rgbGradient 25s ease infinite;
+      padding-bottom: 220px;
+      position: relative;
+    }
+
+    @keyframes rgbGradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      background: rgba(20, 0, 40, 0.9);
+      backdrop-filter: blur(8px);
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .logo-container { display: flex; align-items: center; gap: 10px; }
+    .logo { width: 45px; height: 45px; border-radius: 10px; object-fit: contain; box-shadow: 0 0 12px #ff00c8; }
+    .site-title { font-size: 1.5rem; font-weight: bold; color: #ff00c8; text-shadow: 0 0 8px #ff00c8; }
+
+    .menu-btn {
+      width: 40px; height: 40px;
+      background: none; border: none; cursor: pointer;
+      position: relative; display: flex; align-items: center; justify-content: center;
+      touch-action: manipulation;
+    }
+    .menu-icon, .menu-icon::before, .menu-icon::after {
+      width: 26px; height: 3px; background: #ff00c8; border-radius: 2px;
+      transition: all 0.35s ease; box-shadow: 0 0 6px #ff00c8;
+    }
+    .menu-icon { position: relative; }
+    .menu-icon::before { content: ''; position: absolute; top: -8px; left: 0; }
+    .menu-icon::after { content: ''; position: absolute; top: 8px; left: 0; }
+    .menu-btn.active .menu-icon { background: transparent; box-shadow: none; }
+    .menu-btn.active .menu-icon::before { transform: rotate(45deg); top: 0; }
+    .menu-btn.active .menu-icon::after { transform: rotate(-45deg); top: 0; }
+
+    .sidebar {
+      position: fixed; top: 0; right: -280px; width: 280px; height: 100%;
+      background: rgba(20, 0, 40, 0.98); backdrop-filter: blur(8px);
+      transition: right 0.4s ease; z-index: 999; padding: 80px 20px 30px;
+    }
+    .sidebar.active { right: 0; }
+    .sidebar a {
+      display: block; color: white; text-decoration: none; font-size: 1.25rem;
+      padding: 15px 18px; margin: 10px 0; border-radius: 10px;
+      background: rgba(255,0,200,0.15); border: 1px solid rgba(255,0,200,0.3);
+      transition: 0.3s;
+    }
+    .sidebar a:hover { background: rgba(255,0,200,0.35); transform: translateX(-5px); }
+
+    .music-control {
+      padding: 20px;
+      background: rgba(30,10,50,0.7);
+      border-radius: 12px;
+      margin: 20px 0;
+      border: 1px solid #ff00ff;
+      box-shadow: 0 0 15px rgba(255,0,255,0.4);
+    }
+    .music-control h3 {
+      color: #ff00ff !important;
+      text-shadow: 0 0 8px #ff00ff;
+      text-align: center;
+    }
+    .music-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin: 15px 0;
+      flex-wrap: wrap;
+    }
+    .music-buttons button {
+      background: #ff00c8;
+      color: white;
+      border: none;
+      width: 50px; height: 50px;
+      border-radius: 50%;
+      font-size: 1.8rem;
+      cursor: pointer;
+      transition: 0.3s;
+      box-shadow: 0 0 10px rgba(255,0,200,0.5);
+    }
+    .music-buttons button:hover { transform: scale(1.1); background: #ff33d6; }
+
+    .volume-container {
+      display: flex; align-items: center; gap: 10px;
+      color: #ff00ff; margin-top: 10px;
+    }
+    .volume-slider { flex: 1; }
+
+    .container { margin-top: 80px; padding: 20px; max-width: 1400px; margin-left: auto; margin-right: auto; }
+    .games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 28px; margin-bottom: 60px; }
+
+    .game-card {
+      background: rgba(30,10,50,0.75); border-radius: 16px; overflow: hidden;
+      height: 520px; display: flex; flex-direction: column;
+      border: 1px solid rgba(255,0,200,0.25); transition: 0.3s;
+      cursor: pointer;
+    }
+    .game-card:hover { transform: translateY(-10px); box-shadow: 0 12px 30px rgba(255,0,200,0.4); }
+
+    .logo-wrapper { flex: 1; display: flex; align-items: center; justify-content: center; background: rgba(15,5,35,0.7); padding: 25px; }
+    .game-card img { max-width: 95%; max-height: 95%; object-fit: contain; filter: drop-shadow(0 0 18px #ff00c8); }
+
+    .game-info { padding: 25px; background: rgba(20,0,40,0.8); text-align: center; }
+
+    .game-title { font-size: 1.6rem; color: #ff00c8; text-shadow: 0 0 10px #ff00c8; margin: 0; }
+
+    .about-section { margin: 60px 0; text-align: center; }
+    .about-section h2 { font-size: 2.5rem; color: #ff00c8; text-shadow: 0 0 15px #ff00c8; margin-bottom: 40px; }
+    .about-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; }
+
+    .about-card {
+      background: rgba(30,10,50,0.8); border-radius: 16px; padding: 25px;
+      border: 1px solid rgba(255,0,200,0.3); transition: 0.3s; text-align: left;
+      display: flex; gap: 20px; align-items: flex-start;
+    }
+    .about-card:hover { transform: translateY(-8px); box-shadow: 0 10px 25px rgba(255,0,200,0.35); }
+
+    .about-icon { font-size: 3rem; min-width: 60px; text-align: center; color: #ff00c8; text-shadow: 0 0 10px #ff00c8; }
+    .about-text h3 { color: #ff33d6; margin-bottom: 10px; }
+    .about-text p { color: #ddd; font-size: 1rem; line-height: 1.5; }
+
+    footer {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      text-align: center; padding: 15px; color: #ff00ff; font-size: 1rem;
+      background: rgba(20,0,40,0.9); backdrop-filter: blur(10px);
+      border-top: 1px solid rgba(255,0,200,0.3); z-index: 999;
+      box-shadow: 0 -5px 15px rgba(0,0,0,0.5);
+    }
+
+    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+    .modal-content { background: rgba(30,10,50,0.95); border-radius: 20px; width: 90%; max-width: 420px; padding: 25px; position: relative; border: 2px solid #ff00c8; box-shadow: 0 0 30px rgba(255,0,200,0.5); text-align: center; }
+    .close-btn { position: absolute; top: 10px; right: 15px; font-size: 2.2rem; color: #ff00c8; cursor: pointer; background: none; border: none; }
+    .modal img { max-width: 100%; max-height: 350px; object-fit: contain; margin-bottom: 25px; filter: drop-shadow(0 0 20px #ff00c8); }
+    .modal .game-title { font-size: 2rem; margin-bottom: 25px; }
+    .buy-btn { background: #ff00c8; color: white; font-weight: bold; border: none; padding: 16px 0; border-radius: 30px; font-size: 1.4rem; cursor: pointer; width: 100%; box-shadow: 0 4px 15px rgba(255,0,200,0.6); transition: 0.3s; }
+    .buy-btn:hover { background: #ff33d6; transform: scale(1.05); }
+
+    .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; z-index: 998; }
+    .overlay.active { display: block; }
+
+    @media (max-width: 600px) {
+      .games-grid, .about-grid { grid-template-columns: 1fr; }
+      .game-card { height: 480px; }
+      footer { font-size: 0.9rem; padding: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo-container">
+      <img src="https://files.catbox.moe/e7cdje.jpg" alt="DLP Logo" class="logo">
+      <span class="site-title">🎮 𝐃𝐋𝐏 𝐆𝐀𝐌𝐈𝐍𝐆 𝐒𝐓𝐎𝐑 🎮</span>
+    </div>
+    <button class="menu-btn" id="menuBtn">
+      <span class="menu-icon"></span>
+    </button>
+  </header>
+
+  <div class="sidebar" id="sidebar">
+    <a href="https://wa.me/+94702391618">📱 Contact (WhatsApp)</a>
+    <a href="https://wa.me/+94702391618?text=Hello%20DLP%20Brother%2C%20Please%20add%20me%20to%20the%20group">👥 Join Group (WhatsApp)</a>
+    <a href="https://www.youtube.com/@d.l.p.gaming" target="_blank">▶️ YouTube Channel</a>
+
+    <div class="music-control">
+      <h3>Background Music</h3>
+      <div class="music-buttons">
+        <button id="prev">◀️</button>
+        <button id="play-pause">▶️</button>
+        <button id="next">▶️</button>
+        <button id="vol-up">🔊</button>
+        <button id="vol-down">🔉</button>
+      </div>
+      <div class="-container">
+        <span>Volume:</span>
+        <input type="range" id="volume" class="volume-slider" min="0" max="100" value="40">
+        <span id="volume-value">40%</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="overlay"></div>
+
+  <audio id="bg-music" loop></audio>
+
+  <div class="container">
+    <div class="games-grid">
+
+      <div class="game-card" onclick="openModal('GTA V ', 'https://files.catbox.moe/2brs65.png')">
+        <div class="logo-wrapper"><img src="https://files.catbox.moe/2brs65.png" alt="GTA V "></div>
+        <div class="game-info"><h3 class="game-title">GTA V </h3></div>
+      </div>
+
+      <div class="game-card" onclick="openModal('GTA SANANDREAS', 'https://files.catbox.moe/rlr7uj.png')">
+        <div class="logo-wrapper"><img src="https://files.catbox.moe/rlr7uj.png" alt="GTA SANANDREAS"></div>
+        <div class="game-info"><h3 class="game-title">GTA SANANDREAS</h3></div>
+      </div>
+
+      <div class="game-card" onclick="openModal('NFS MW 2012', 'https://files.catbox.moe/52c2q0.png')">
+        <div class="logo-wrapper"><img src="https://files.catbox.moe/52c2q0.png" alt="NFS MW 2012"></div>
+        <div class="game-info"><h3 class="game-title">NFS MW 2012</h3></div>
+      </div>
+
+      <div class="game-card" onclick="openModal('CRYSIS 1', 'https://files.catbox.moe/vzcas0.png')">
+        <div class="logo-wrapper"><img src="https://files.catbox.moe/vzcas0.png" alt="CRYSIS 1"></div>
+        <div class="game-info"><h3 class="game-title">CRYSIS 1</h3></div>
+      </div>
+
+      <div class="game-card" onclick="openModal('SNIPER GOST WORRIER', 'https://files.catbox.moe/mhzy3r.png')">
+        <div class="logo-wrapper"><img src="https://files.catbox.moe/mhzy3r.png" alt="SNIPER GOST WORRIER"></div>
+        <div class="game-info"><h3 class="game-title">SNIPER GOST WORRIER</h3></div>
+      </div>
+
+      <div class="game-card" onclick="openModal('ETS 2', 'https://files.catbox.moe/s4wbzj.png')">
+        <div class="logo-wrapper"><img src="https://files.catbox.moe/s4wbzj.png" alt="ETS 2"></div>
+        <div class="game-info"><h3 class="game-title">ETS 2</h3></div>
+      </div>
+
+    </div>
+
+    <div class="about-section">
+      <h2>About DLP Gaming Stock 🔥</h2>
+      <div class="about-grid">
+
+        <div class="about-card">
+          <div class="about-icon">🎮</div>
+          <div class="about-text">
+            <h3>#1 Gaming Stock in Sri Lanka</h3>
+            <p>We stock the latest original games with fast delivery islandwide!</p>
+          </div>
+        </div>
+
+        <div class="about-card">
+          <div class="about-icon">💎</div>
+          <div class="about-text">
+            <h3>100% Original & Trusted</h3>
+            <p>Only genuine copies – No fakes, no scams, DLP guarantee!</p>
+          </div>
+        </div>
+
+        <div class="about-card">
+          <div class="about-icon">🚀</div>
+          <div class="about-text">
+            <h3>Super Fast Delivery</h3>
+            <p>Order today, get it within 24 hours islandwide. Express available!</p>
+          </div>
+        </div>
+
+        <div class="about-card">
+          <div class="about-icon">👥</div>
+          <div class="about-text">
+            <h3>Big Community</h3>
+            <p>Join our WhatsApp group with 1000+ active gamers!</p>
+          </div>
+        </div>
+
+        <div class="about-card">
+          <div class="about-icon">📺</div>
+          <div class="about-text">
+            <h3>YouTube Channel</h3>
+            <p>Daily reviews, unboxings & live streams @d.l.p.gaming</p>
+          </div>
+        </div>
+
+        <div class="about-card">
+          <div class="about-icon">🔥</div>
+          <div class="about-text">
+            <h3>Hot Deals Every Week</h3>
+            <p>Discounts, bundles & special promotions all the time!</p>
+          </div>
+        </div>
+
+        <div class="about-card">
+          <div class="about-icon">🛡️</div>
+          <div class="about-text">
+            <h3>After-Sales Support</h3>
+            <p>Free help to activate & setup your games!</p>
+          </div>
+        </div>
+
+        <div class="about-card">
+          <div class="about-icon">🌟</div>
+          <div class="about-text">
+            <h3>Trusted Since 2023</h3>
+            <p>Sri Lanka's favorite gaming brand with real trust!</p>
+          </div>
+        </div>
+
+        <div class="about-card">
+          <div class="about-icon">💬</div>
+          <div class="about-text">
+            <h3>24/7 Support</h3>
+            <p>Message us anytime on WhatsApp – Fast replies!</p>
+          </div>
+        </div>
+
+        <div class="about-card">
+          <div class="about-icon">🏆</div>
+          <div class="about-text">
+            <h3>DLP Brothers Forever</h3>
+            <p>We're your brothers! Let's game & enjoy together! 🚀</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="gameModal">
+    <div class="modal-content">
+      <button class="close-btn" onclick="closeModal()">×</button>
+      <img id="modalImage" src="" alt="Game Logo">
+      <h3 class="game-title" id="modalTitle"></h3>
+      <button class="buy-btn" id="modalBuyBtn">Buy Now</button>
+    </div>
+  </div>
+
+  <footer>© 2026 DLP GAMING STOR •CREATED BY DLP OFC • All Rights Reserved 🔥</footer>
+
+  <script>
+    const menuBtn = document.getElementById('menuBtn');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+
+    function toggleSidebar(e) {
+      e.preventDefault();
+      menuBtn.classList.toggle('active');
+      sidebar.classList.toggle('active');
+      overlay.classList.toggle('active');
+    }
+
+    menuBtn.addEventListener('click', toggleSidebar);
+    menuBtn.addEventListener('touchstart', toggleSidebar, { passive: false });
+    overlay.addEventListener('click', toggleSidebar);
+
+    function openModal(gameName, imgSrc) {
+      document.getElementById('modalTitle').textContent = gameName;
+      document.getElementById('modalImage').src = imgSrc;
+      document.getElementById('gameModal').style.display = 'flex';
+      document.getElementById('modalBuyBtn').onclick = () => buyGame(gameName);
+    }
+
+    function closeModal() {
+      document.getElementById('gameModal').style.display = 'none';
+    }
+
+    function buyGame(gameName) {
+      const msg = `Hello DLP Brother, I came to buy ${gameName}!`;
+      window.open(`https://wa.me/+94702391618?text=${encodeURIComponent(msg)}`, '_blank');
+    }
+
+    // Music Player with your custom links
+    const audio = document.getElementById('bg-music');
+    const playlist = [
+      "https://substantial-apricot-2ucfdouhd4.edgeone.app/AUD-20260106-WA0023.mp3",
+      "https://weary-silver-qu1pohacsn.edgeone.app/AUD-20260107-WA0036.mp3",
+      "https://constitutional-tan-eunwnoca7x.edgeone.app/doni-deaani-official-dj-remix-visualizer-remix-wawasthi-dj-dewmina-128-ytshorts.savetube.me.mp3",
+      "https://convincing-tomato-szmybr7zck.edgeone.app/AUD-20260103-WA0240.mp3"
+    ];
+    let currentTrack = 0;
+
+    function loadTrack(index) {
+      audio.src = playlist[index];
+      audio.play().catch(() => console.log("Autoplay blocked - tap play"));
+      updatePlayPauseIcon();
+    }
+
+    function updatePlayPauseIcon() {
+      document.getElementById('play-pause').textContent = audio.paused ? '▶️' : '⏸️';
+    }
+
+    document.getElementById('play-pause').onclick = () => {
+      if (audio.paused) {
+        audio.play();
+      } else {
+        audio.pause();
+      }
+      updatePlayPauseIcon();
+    };
+
+    document.getElementById('next').onclick = () => {
+      currentTrack = (currentTrack + 1) % playlist.length;
+      loadTrack(currentTrack);
+    };
+
+    document.getElementById('prev').onclick = () => {
+      currentTrack = (currentTrack - 1 + playlist.length) % playlist.length;
+      loadTrack(currentTrack);
+    };
+
+    // Volume Controls
+    const volumeSlider = document.getElementById('volume');
+    const volumeValue = document.getElementById('volume-value');
+
+    volumeSlider.oninput = () => {
+      audio.volume = volumeSlider.value / 100;
+      volumeValue.textContent = volumeSlider.value + '%';
+    };
+
+    document.getElementById('vol-up').onclick = () => {
+      let newVol = Math.min(100, parseInt(volumeSlider.value) + 10);
+      volumeSlider.value = newVol;
+      audio.volume = newVol / 100;
+      volumeValue.textContent = newVol + '%';
+    };
+
+    document.getElementById('vol-down').onclick = () => {
+      let newVol = Math.max(0, parseInt(volumeSlider.value) - 10);
+      volumeSlider.value = newVol;
+      audio.volume = newVol / 100;
+      volumeValue.textContent = newVol + '%';
+    };
+
+    // Start on first interaction (mobile safe)
+    document.body.addEventListener('touchstart', function initAudio() {
+      loadTrack(currentTrack);
+      document.body.removeEventListener('touchstart', initAudio);
+    }, { once: true, passive: true });
+
+    audio.onended = () => {
+      currentTrack = (currentTrack + 1) % playlist.length;
+      loadTrack(currentTrack);
+    };
+  </script>
+</body>
+  </html>
